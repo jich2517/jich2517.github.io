@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency in Words Translator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="calcustyle">
+        <div class="display">
+            <input type="text" id="user_input" disabled><br>
+            <div id="word_display"></div>
+        </div>
+        <div class="buttons">
+            <button onclick="display('7')">7</button>
+            <button onclick="display('8')">8</button>
+            <button onclick="display('9')">9</button>
+            <button onclick="display('4')">4</button>
+            <button onclick="display('5')">5</button>
+            <button onclick="display('6')">6</button>
+            <button onclick="display('1')">1</button>
+            <button onclick="display('2')">2</button>
+            <button onclick="display('3')">3</button>
+            <button onclick="display('0')">0</button>
+            <button onclick="display('.')">.</button>
+            <button onclick="clearDisplay()">C</button>
+            <button onclick="translateToWords()">Translate</button>
+        </div>
+    </div>
+        <script>
+            let input = "";
+
+                function display(digit) {
+                    if (digit === '.' && input.includes('.')) return;
+                    input += digit;
+                    document.getElementById('user_input').value = input;
+                }
+                
+                function clearDisplay() {
+                    input = "";
+                    document.getElementById('user_input').value = "";
+                    document.getElementById('word_display').innerHTML = "";
+                }
+                
+                function translateToWords() {
+                    const [dollars, cents] = input.split('.').map(num => parseInt(num, 10));
+                    let result = "";
+                
+                    if (!isNaN(dollars)) {
+                        result += `${convertToWords(dollars)} dollar${dollars !== 1 ? 's' : ''}`;
+                    }
+                
+                    if (!isNaN(cents)) {
+                        result += ` and ${convertToWords(cents)} cent${cents !== 1 ? 's' : ''}`;
+                    }
+                
+                    document.getElementById('word_display').innerHTML = result;
+                }
+                
+                function convertToWords(num) {
+                    const units = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
+                    const teens = ["", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"];
+                    const tens = ["", "ten", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
+                    const thousands = ["", "thousand"];
+                
+                    if (num === 0) return "zero";
+                
+                    let words = "";
+                
+                    if (num > 999) {
+                        words += `${convertToWords(Math.floor(num / 1000))} thousand `;
+                        num %= 1000;
+                    }
+                
+                    if (num > 99) {
+                        words += `${units[Math.floor(num / 100)]} hundred `;
+                        num %= 100;
+                    }
+                
+                    if (num > 10 && num < 20) {
+                        words += teens[num - 10];
+                    } else {
+                        words += tens[Math.floor(num / 10)];
+                        if (num % 10) words += `${units[num % 10]}`;
+                    }
+                
+                    return words.trim();
+                }
+        </script>
+</body>
+</html>
